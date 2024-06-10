@@ -8,7 +8,7 @@ use std::{
 };
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about = "Generate passwords comprised of multiple random words.", long_about = None)]
 struct Args {
     /// File in which to save the generated passwords
     #[arg(short, long, default_value = "passwords.txt")]

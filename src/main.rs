@@ -37,11 +37,11 @@ struct Args {
 
     /// Minimum length of words used
     #[arg(long, default_value_t = 3)]
-    word_min_length: u8,
+    word_min_length: usize,
 
     /// Maximum length of words usedline
     #[arg(long, default_value_t = 6)]
-    word_max_length: u8,
+    word_max_length: usize,
 }
 
 fn main() -> std::io::Result<()> {
@@ -61,13 +61,17 @@ fn main() -> std::io::Result<()> {
         }
         println!("Using internal word list.");
         for line in wordlist_str.lines() {
-            wordlist.push(line.to_string());
+            if line.char_indices().count() >= args.word_min_length
+                && line.char_indices().count() <= args.word_max_length
+            {
+                wordlist.push(line.to_string());
+            }
         }
     } else {
         // Load from arg.
         let listfile = args.wordlist_file.unwrap();
         println!("Using specified word list: {}", listfile.display());
-        wordlist = get_word_list(listfile);
+        wordlist = get_word_list(listfile, args.word_min_length, args.word_max_length);
     }
 
     let mut passwords:Vec<String> = Vec::new();
@@ -93,11 +97,15 @@ fn main() -> std::io::Result<()> {
 }
 
 /// Load list of words from text file
-fn get_word_list(filename: PathBuf) -> Vec<String> {
+fn get_word_list(filename: PathBuf, word_min_length: usize, word_max_length: usize) -> Vec<String> {
     let file = File::open(filename).expect("no such file");
     let buf = BufReader::new(file);
     buf.lines()
-        .map(|l| l.expect("Could not parse line"))
+        .map(|line| line.expect("Could not parse line"))
+        .filter(|line| {
+            line.char_indices().count() >= word_min_length
+                && line.char_indices().count() <= word_max_length
+        })
         .collect()
 }
 

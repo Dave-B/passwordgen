@@ -1,0 +1,18 @@
+About wordlist.txt
+
+wordlist.txt provides the built-in collection of words PasswordGen uses when making passwords.
+
+This word list file was generated using SCOWL (Spell Checker Oriented Word Lists)
+<http://wordlist.aspell.net/>, as follows:
+
+* Checkout and `make` code from https://github.com/en-wl/wordlist.git
+
+* Run, stripping accents, removing "'s" suffixes and upper/lower case duplicates:
+    ./mk-list --accents strip british 10 | grep -v "'" | sort -u | uniq -i > wordlist_full.txt
+
+* Remove words shorter than three letters:
+    awk '{ if (length($0) > 2) print }' wordlist_full.txt > wordlist.txt
+
+* Copy wordlist.txt to the src/assets directory.
+
+PasswordGen must be re-built (e.g. `cargo build`) to use the new word list.

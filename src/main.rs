@@ -4,7 +4,8 @@ use std::{
     fs,
     fs::File,
     io::{BufRead, BufReader, Write},
-    path::PathBuf, process,
+    path::PathBuf,
+    process,
 };
 
 #[derive(Parser, Debug)]
@@ -46,7 +47,7 @@ struct Args {
 
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
-    let mut wordlist:Vec<String>= Vec::new();
+    let mut wordlist: Vec<String> = Vec::new();
 
     if args.wordlist_file.is_none() {
         // Load from asset file included into binary.
@@ -74,7 +75,7 @@ fn main() -> std::io::Result<()> {
         wordlist = get_word_list(listfile, args.word_min_length, args.word_max_length);
     }
 
-    let mut passwords:Vec<String> = Vec::new();
+    let mut passwords: Vec<String> = Vec::new();
     for _ in 0..args.number_passwords {
         passwords.push(generate_password(
             &wordlist,

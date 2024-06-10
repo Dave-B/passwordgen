@@ -1,9 +1,18 @@
+// SPDX-FileCopyrightText: 2024 David Balch <david@balch.co.uk>
+//
+// SPDX-License-Identifier: GPL-3.0-only
+
 About wordlist.txt
 
 wordlist.txt provides the built-in collection of words PasswordGen uses when making passwords.
 
 This word list file was generated using SCOWL (Spell Checker Oriented Word Lists)
-<http://wordlist.aspell.net/>, as follows:
+<http://wordlist.aspell.net/>, which is derived from many sources under a BSD compatible license.
+The combined work is freely available under a MIT-like license
+<https://raw.githubusercontent.com/kevina/wordlist/master/scowl/Copyright>.
+
+
+Generate as follows:
 
 * Checkout and `make` code from https://github.com/en-wl/wordlist.git
 

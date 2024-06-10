@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 David Balch <david@balch.co.uk>
+//
+// SPDX-License-Identifier: GPL-3.0-only
+
 use clap::Parser;
 use rand::Rng;
 use std::{

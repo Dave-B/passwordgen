@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 David Balch <david@balch.co.uk>
+#
+# SPDX-License-Identifier: CC0-1.0
+
 [package]
 name = "passwordgen"
 version = "0.1.0"

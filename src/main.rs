@@ -14,8 +14,9 @@ struct Args {
     output_file: PathBuf,
 
     /// File from which to load words
-    #[arg(short, long, default_value = "assets/wordlist.txt")]
-    wordlist_file: PathBuf,
+    // #[arg(short, long, default_value = "assets/wordlist.txt")]
+    #[arg(short, long)]
+    wordlist_file: Option<PathBuf>,
 
     /// Number of passwords to generate
     #[arg(short, long, default_value_t = 250)]
@@ -40,11 +41,24 @@ struct Args {
 
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
+    let mut wordlist:Vec<String>= Vec::new();
 
-    let wordlist = get_word_list(args.wordlist_file);
-    // println!("{:#?}", wordlist);
+    if args.wordlist_file.is_some() {
+        // Load from arg.
+        let listfile = args.wordlist_file.unwrap();
+        println!("Using specified word list: {}", listfile.display());
+        wordlist = get_word_list(listfile);
+    } else {
+        // Load from asset file included into binary.
+        println!("Using internal word list.");
+        let wordlist_str = include_str!("assets/wordlist.txt");
+        for line in wordlist_str.lines() {
+            wordlist.push(line.to_string());
+        }
 
-    let mut passwords = Vec::new();
+    }
+
+    let mut passwords:Vec<String> = Vec::new();
     for _ in 0..args.number_passwords {
         passwords.push(generate_password(
             &wordlist,

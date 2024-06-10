@@ -1,10 +1,10 @@
 use clap::Parser;
-use std::{
-    fs::{File},
-    io::{BufRead, BufReader},
-    path::PathBuf
-};
 use rand::Rng;
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+    path::PathBuf,
+};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -35,7 +35,7 @@ struct Args {
 
     /// Maximum length of words usedline
     #[arg(long, default_value_t = 6)]
-    word_max_length: u8
+    word_max_length: u8,
 }
 
 fn main() {
@@ -45,14 +45,22 @@ fn main() {
 
     let wordlist = get_word_list(args.wordlist_file);
     // println!("{:#?}", wordlist);
-    
+
     let mut passwords = Vec::new();
     for _ in 0..args.number_passwords {
-        passwords.push(generate_password(&wordlist, args.password_word_count, &args.separator));
+        passwords.push(generate_password(
+            &wordlist,
+            args.password_word_count,
+            &args.separator,
+        ));
     }
 
     println!("{:?}", passwords);
-    println!("Generated {} passwords, saved to the file \"{}\".", args.number_passwords, &args.output_file.to_string_lossy());
+    println!(
+        "Generated {} passwords, saved to the file \"{}\".",
+        args.number_passwords,
+        &args.output_file.to_string_lossy()
+    );
 }
 
 /// Load list of words from text file
@@ -71,10 +79,8 @@ fn generate_password(wordlist: &[String], words_in_password: u8, separator: &Str
     let mut rng = rand::thread_rng();
     let mut words: Vec<String> = vec![];
     for _ in 0..words_in_password {
-        words.push(wordlist[
-            rng.gen_range(0..wordlist_length)].clone());
+        words.push(wordlist[rng.gen_range(0..wordlist_length)].clone());
     }
 
     words.join(separator)
 }
-

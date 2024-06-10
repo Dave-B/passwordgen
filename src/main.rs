@@ -47,11 +47,12 @@ fn main() {
     // println!("{:#?}", wordlist);
     
     let mut passwords = Vec::new();
-    for _ in 1..args.number_passwords {
+    for _ in 0..args.number_passwords {
         passwords.push(generate_password(&wordlist, args.password_word_count, &args.separator));
     }
 
     println!("{:?}", passwords);
+    println!("Generated {} passwords, saved to the file \"{}\".", args.number_passwords, &args.output_file.to_string_lossy());
 }
 
 /// Load list of words from text file
@@ -63,7 +64,7 @@ fn get_word_list(filename: PathBuf) -> Vec<String> {
         .collect()
 }
 
-fn generate_password(wordlist: &Vec<String>, words_in_password: u8, separator: &String) -> String {
+fn generate_password(wordlist: &[String], words_in_password: u8, separator: &String) -> String {
     let wordlist_length = wordlist.len();
     // println!("{}", &wordlist_length);
 
@@ -74,6 +75,6 @@ fn generate_password(wordlist: &Vec<String>, words_in_password: u8, separator: &
             rng.gen_range(0..wordlist_length)].clone());
     }
 
-    return words.join(separator.as_str());
+    words.join(separator)
 }
 

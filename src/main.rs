@@ -1,9 +1,10 @@
 use clap::Parser;
 use rand::Rng;
 use std::{
+    fs,
     fs::File,
     io::{BufRead, BufReader, Write},
-    path::PathBuf,
+    path::PathBuf, process,
 };
 
 #[derive(Parser, Debug)]
@@ -13,7 +14,7 @@ struct Args {
     #[arg(short, long, default_value = "passwords.txt")]
     output_file: PathBuf,
 
-    /// File from which to load words
+    /// Optional file from which to load words (overriding the internal word list)
     // #[arg(short, long, default_value = "assets/wordlist.txt")]
     #[arg(short, long)]
     wordlist_file: Option<PathBuf>,
@@ -30,6 +31,10 @@ struct Args {
     #[arg(short, long, default_value = "-")]
     separator: String,
 
+    /// Dump internal word list to "wordlist.txt", then exit.
+    #[arg(short, long, default_value_t = false)]
+    dump_internal_words: bool,
+
     /// Minimum length of words used
     #[arg(long, default_value_t = 3)]
     word_min_length: u8,
@@ -43,19 +48,26 @@ fn main() -> std::io::Result<()> {
     let args = Args::parse();
     let mut wordlist:Vec<String>= Vec::new();
 
-    if args.wordlist_file.is_some() {
+    if args.wordlist_file.is_none() {
+        // Load from asset file included into binary.
+        let wordlist_str = include_str!("assets/wordlist.txt");
+        if args.dump_internal_words {
+            // println!("{}", wordlist.join(","));
+            // let mut dump_file = File::create("wordlist.txt")?;
+
+            fs::write("wordlist.txt", wordlist_str)?;
+            println!("Dumped internal word list to \"wordlist.txt\".");
+            process::exit(0);
+        }
+        println!("Using internal word list.");
+        for line in wordlist_str.lines() {
+            wordlist.push(line.to_string());
+        }
+    } else {
         // Load from arg.
         let listfile = args.wordlist_file.unwrap();
         println!("Using specified word list: {}", listfile.display());
         wordlist = get_word_list(listfile);
-    } else {
-        // Load from asset file included into binary.
-        println!("Using internal word list.");
-        let wordlist_str = include_str!("assets/wordlist.txt");
-        for line in wordlist_str.lines() {
-            wordlist.push(line.to_string());
-        }
-
     }
 
     let mut passwords:Vec<String> = Vec::new();

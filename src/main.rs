@@ -2,7 +2,7 @@ use clap::Parser;
 use rand::Rng;
 use std::{
     fs::File,
-    io::{BufRead, BufReader},
+    io::{BufRead, BufReader, Write},
     path::PathBuf,
 };
 
@@ -10,7 +10,7 @@ use std::{
 #[command(version, about, long_about = None)]
 struct Args {
     /// File in which to save the generated passwords
-    #[arg(short, long, default_value = "output.txt")]
+    #[arg(short, long, default_value = "passwords.txt")]
     output_file: PathBuf,
 
     /// File from which to load words
@@ -38,10 +38,8 @@ struct Args {
     word_max_length: u8,
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let args = Args::parse();
-
-    println!("Hello {}!", args.output_file.display());
 
     let wordlist = get_word_list(args.wordlist_file);
     // println!("{:#?}", wordlist);
@@ -55,12 +53,17 @@ fn main() {
         ));
     }
 
-    println!("{:?}", passwords);
+    let mut output_file = File::create(&args.output_file)?;
+    for line in passwords {
+        write!(output_file, "{}\n", line)?;
+    }
     println!(
         "Generated {} passwords, saved to the file \"{}\".",
         args.number_passwords,
         &args.output_file.to_string_lossy()
     );
+
+    Ok(())
 }
 
 /// Load list of words from text file

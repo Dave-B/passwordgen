@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: PasswordGen
 Upstream-Contact: David Balch <david@balch.co.uk>
-Source: 
+Source: https://github.com/Dave-B/passwordgen
 
 # Sample paragraph, commented out:
 #
